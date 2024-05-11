@@ -29,7 +29,8 @@ class RedisClient {
   }
 
   async set(key, value, ttl) {
-    this.client.set(key, value, 'EX', ttl);
+    await promisify(this.client.SETEX)
+      .bind(this.client)(key, ttl, value);
   }
 
   async del(key) {

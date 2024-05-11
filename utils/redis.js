@@ -3,19 +3,19 @@ import { promisify } from 'util';
 
 class RedisClient {
   constructor() {
+    this.connect_stat = true;
     this.client = createClient()
       .on('error', (err) => {
-        console.error(err);
+        console.error(err.message);
+        this.connect_stat = false;
+      })
+      .on('connect', () => {
+        this.connect_stat = true;
       });
   }
 
   isAlive() {
-    this.client.ping((err) => {
-      if (err) {
-        return false;
-      }
-      return true;
-    });
+    return this.connect_stat;
   }
 
   async get(key) {
@@ -29,8 +29,7 @@ class RedisClient {
   }
 
   async set(key, value, ttl) {
-    await promisify(this.client.SETEX)
-      .bind(this.client)(key, ttl, value);
+    this.client.set(key, value, 'EX', ttl);
   }
 
   async del(key) {

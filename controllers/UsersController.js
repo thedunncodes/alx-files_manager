@@ -13,13 +13,11 @@ export default class UsersController {
       return;
     }
     const result = await dbClient.client.db().collection('users').findOne({ email: data.email });
-    console.log(result);
     if (result) {
       res.status(400).json({ error: 'Already exist' });
       return;
     }
     const hashedPwd = sha1(data.password);
-    console.log(hashedPwd);
     const newUser = await dbClient.client.db().collection('users').insertOne({ email: data.email, password: hashedPwd });
     res.status(200).json({ id: newUser.insertedId, email: data.email });
   }

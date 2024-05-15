@@ -28,7 +28,10 @@ export class UsersController {
 export class UserController {
   static async getMe(req, res) {
     const token = req.headers['x-token'];
-    const userId = await redisClient.get(`auth_${token.toString()}`);
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const userId = await redisClient.get(`auth_${token}`);
     if (userId === null || !userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -36,6 +39,6 @@ export class UserController {
     if (!user || user === null) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    return res.status(200).json({ id: user._id.toString(), email: user.email });
+    return res.status(200).json({ id: user._id, email: user.email });
   }
 }

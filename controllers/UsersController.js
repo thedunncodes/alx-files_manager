@@ -33,6 +33,6 @@ export class UserController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     const user = await dbClient.client.db().collection('users').findOne({ _id: new ObjectId(userId) });
-    return res.status(200).json({ id: user._id, email: user.email });
+    return res.status(200).json({ id: user._id.toString(), email: user.email });
   }
 }

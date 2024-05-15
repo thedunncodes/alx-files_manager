@@ -29,10 +29,13 @@ export class UserController {
   static async getMe(req, res) {
     const token = req.headers['x-token'];
     const userId = await redisClient.get(`auth_${token.toString()}`);
-    if (userId === null) {
+    if (userId === null || !userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     const user = await dbClient.client.db().collection('users').findOne({ _id: new ObjectId(userId) });
+    if (!user || user === null) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
     return res.status(200).json({ id: user._id.toString(), email: user.email });
   }
 }

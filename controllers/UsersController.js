@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import dbClient from '../utils/db';
 import redisClient from '../utils/redis';
 
-export default class UsersController {
+export class UsersController {
   static async postNew(req, res) {
     const data = req.body;
     if (!Object.keys(data).includes('email')) {
@@ -23,7 +23,9 @@ export default class UsersController {
     const newUser = await dbClient.client.db().collection('users').insertOne({ email: data.email, password: hashedPwd });
     res.status(201).json({ id: newUser.insertedId, email: data.email });
   }
+}
 
+export class UserController {
   static async getMe(req, res) {
     const token = req.headers['x-token'];
     const userId = await redisClient.get(`auth_${token.toString()}`);

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import AppController from '../controllers/AppController';
-import UsersController from '../controllers/UsersController';
+import { UsersController, UserController } from '../controllers/UsersController';
 import AuthController from '../controllers/AuthController';
 
 const router = Router();
@@ -15,6 +15,6 @@ router.get('/connect', AuthController.getConnect);
 
 router.get('/disconnect', AuthController.getDisconnect);
 
-router.get('/users/me', UsersController.getMe);
+router.get('/users/me', UserController.getMe);
 
 module.exports = router;

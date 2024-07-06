@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
-import { getUserWithToken, getUserWithId } from '../utils/getUser';
-import getFileById from '../utils/fileAuth';
+import { getUserWithToken } from '../utils/getUser';
+import { getFileById, getUserFilesWithId, getUserFilesWithParentId } from '../utils/fileAuth';
 import dbClient from '../utils/db';
 
 export default class FilesController {
@@ -93,6 +93,33 @@ export default class FilesController {
   }
 
   static async getShow(req, res) {
-    const user = await dbClient.client.collection('users').findOne({ _id: req.params.id })
+    const user = await getUserWithToken(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const file = await getFileById(req.params.id);
+    if (!(file.userID === user._id)) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    return res.status(201).json(file);
+  }
+
+  static async getIndex(req, res) {
+    const user = await getUserWithToken(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const page = parseInt(req.query.page, 10) || 0;
+    if (req.query.parentId) {
+      const userFiles = await getUserFilesWithParentId(req.query.parentId, page);
+      return res.status(201).json(userFiles);
+    }
+
+    const userFiles = await getUserFilesWithId(user._id, page);
+
+    return res.status(201).json(userFiles);
   }
 }

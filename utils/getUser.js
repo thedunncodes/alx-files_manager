@@ -19,14 +19,14 @@ export async function getUserWithToken(req) {
   return user;
 }
 
-export async function getUserWithId(pId) {
-  if (!pId) {
+export async function getUserWithId(Id) {
+  if (!Id) {
     return null;
   }
-  const userFile = await dbClient.client.db().collection('users').findOne({ _id: new ObjectId(pId) });
-  if (!userFile) {
+  const user = await dbClient.client.db().collection('users').findOne({ _id: new ObjectId(Id) });
+  if (!user) {
     return null;
   }
 
-  return userFile;
+  return user;
 }

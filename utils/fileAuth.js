@@ -12,13 +12,33 @@ export async function getFileById(id) {
   return file;
 }
 
-export async function getUserFilesWithId(Id) {
+export async function getUserFilesWithId(Id, page) {
   if (!Id) {
     return null;
   }
-  const userFiles = await dbClient.client.db().collection('files').find({ userId: new ObjectId(Id) }).toArray();
+  const userFiles = await dbClient.client.db().collection('files').aggregate([
+    { $match: { userId: new ObjectId(Id) } },
+    { $skip: Number(page) * 20 },
+    { $limit: 20 },
+  ]).toArray();
   if (!userFiles) {
     return null;
+  }
+
+  return userFiles;
+}
+
+export async function getUserFilesWithParentId(Id, page) {
+  if (!Id) {
+    return [];
+  }
+  const userFiles = await dbClient.client.db().collection('files').aggregate([
+    { $match: { parentId: Id } },
+    { $skip: Number(page) * 20 },
+    { $limit: 20 },
+  ]).toArray();
+  if (!userFiles) {
+    return [];
   }
 
   return userFiles;

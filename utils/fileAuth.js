@@ -16,10 +16,10 @@ export async function getUserFilesWithId(Id) {
   if (!Id) {
     return null;
   }
-  const user = await dbClient.client.db().collection('files').find({ userId: new ObjectId(Id) }).toArray();
-  if (!user) {
+  const userFiles = await dbClient.client.db().collection('files').find({ userId: new ObjectId(Id) }).toArray();
+  if (!userFiles) {
     return null;
   }
 
-  return user;
+  return userFiles;
 }

@@ -19,7 +19,7 @@ export async function getUserWithToken(req) {
   return user;
 }
 
-export async function getUserWithParentId(pId) {
+export async function getFileWithParentId(pId) {
   if (!pId) {
     return null;
   }

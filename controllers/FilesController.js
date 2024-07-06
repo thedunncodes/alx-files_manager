@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
-import { getUserWithToken, getUserWithParentId } from '../utils/getUser';
+import { getUserWithToken, getFileWithParentId } from '../utils/getUser';
 import getFileById from '../utils/fileAuth';
 import dbClient from '../utils/db';
 
@@ -23,7 +23,7 @@ export default class FilesController {
     }
 
     if (req.body.parentId) {
-      const userFile = await getUserWithParentId(req.body.parentId);
+      const userFile = await getFileWithParentId(req.body.parentId);
       if (!userFile) {
         return res.status(400).json({ error: 'Parent not found' });
       }
@@ -90,5 +90,9 @@ export default class FilesController {
       isPublic: file.isPublic,
       parentId: file.parentId,
     });
+  }
+
+  static async getShow(req, res) {
+    const user = await dbClient.client.collection('users').findOne({ _id: req.params.id })
   }
 }

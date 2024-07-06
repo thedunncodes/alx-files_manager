@@ -19,11 +19,11 @@ export async function getUserWithToken(req) {
   return user;
 }
 
-export async function getFileWithParentId(pId) {
+export async function getUserWithId(pId) {
   if (!pId) {
     return null;
   }
-  const userFile = await dbClient.client.db().collection('files').findOne({ _id: new ObjectId(pId) });
+  const userFile = await dbClient.client.db().collection('users').findOne({ _id: new ObjectId(pId) });
   if (!userFile) {
     return null;
   }

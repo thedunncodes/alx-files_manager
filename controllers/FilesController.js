@@ -42,7 +42,7 @@ export default class FilesController {
     const filePath = `${directoryPath}/${fileUuid}`;
 
     const isPublic = req.body.isPublic || false;
-    const parentId = req.body.parentId || 0;
+    const parentId = req.body.parentId || String(0);
 
     if (req.body.type === 'folder') {
       const newFile = await dbClient.client.db().collection('files').insertOne({
@@ -119,7 +119,6 @@ export default class FilesController {
     const page = parseInt(req.query.page, 10) || 0;
     const pID = req.query.parentId || String(0);
     const Files = await getUserFilesWithParentId(pID, page);
-    console.log(Files)
     const userFiles = [];
     Files.forEach((item) => {
       userFiles.push({

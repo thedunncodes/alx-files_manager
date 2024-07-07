@@ -117,12 +117,20 @@ export default class FilesController {
     }
 
     const page = parseInt(req.query.page, 10) || 0;
-    if (req.query.parentId) {
-      const userFiles = await getUserFilesWithParentId(req.query.parentId, page);
-      return res.status(201).json(userFiles);
-    }
-
-    const userFiles = await getUserFilesWithId(user._id, page);
+    const pID = req.query.parentId || String(0);
+    const Files = await getUserFilesWithParentId(pID, page);
+    console.log(Files)
+    const userFiles = [];
+    Files.forEach((item) => {
+      userFiles.push({
+        id: item._id.toString(),
+        userId: item.userId,
+        name: item.name,
+        type: item.type,
+        isPublic: item.isPublic || null,
+        parentId: item.parentId,
+      });
+    });
 
     return res.status(200).json(userFiles);
   }

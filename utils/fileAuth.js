@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import dbClient from './db';
+import { stringify } from 'uuid';
 
 export async function getFileById(id) {
   if (!id) {
@@ -33,7 +34,7 @@ export async function getUserFilesWithParentId(Id, page) {
     return [];
   }
   const userFiles = await dbClient.client.db().collection('files').aggregate([
-    { $match: { parentId: Id } },
+    { $match: { parentId: String(Id) } },
     { $skip: Number(page) * 20 },
     { $limit: 20 },
   ]).toArray();

@@ -58,6 +58,7 @@ export default class FilesController {
         userId: file.userId,
         name: file.name,
         type: file.type,
+        isPublic,
         parentId: file.parentId,
       });
     }

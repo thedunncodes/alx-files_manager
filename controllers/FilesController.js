@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import { getUserWithToken } from '../utils/getUser';
 import { getFileById, getUserFilesWithId, getUserFilesWithParentId } from '../utils/fileAuth';
@@ -42,7 +43,7 @@ export default class FilesController {
     const filePath = `${directoryPath}/${fileUuid}`;
 
     const isPublic = req.body.isPublic || false;
-    const parentId = req.body.parentId || String(0);
+    const parentId = new ObjectId(req.query.parentId) || String(0);
 
     if (req.body.type === 'folder') {
       const newFile = await dbClient.client.db().collection('files').insertOne({
@@ -128,7 +129,7 @@ export default class FilesController {
     let Files;
     const page = parseInt(req.query.page, 10) || 0;
     if (req.query.parentId) {
-      const pID = req.query.parentId || String(0);
+      const pID = new ObjectId(req.query.parentId) || String(0);
       Files = await getUserFilesWithParentId(pID, page);
     } else {
       Files = await getUserFilesWithId(user._id.toString(), page);

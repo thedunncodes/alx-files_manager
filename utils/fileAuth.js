@@ -34,7 +34,7 @@ export async function getUserFilesWithParentId(Id, page) {
     return [];
   }
   const userFiles = await dbClient.client.db().collection('files').aggregate([
-    { $match: { parentId: String(Id) } },
+    { $match: { parentId: Id } },
     { $skip: Number(page) * 20 },
     { $limit: 20 },
   ]).toArray();

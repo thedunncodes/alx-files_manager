@@ -108,7 +108,14 @@ export default class FilesController {
     if (!(file.userId.toString() === user._id.toString())) {
       return res.status(404).json({ error: 'Not found' });
     }
-    return res.status(200).json(file);
+    return res.status(200).json({
+      id: file._id.toString(),
+      userId: file.userId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId,
+    });
   }
 
   static async getIndex(req, res) {
@@ -117,17 +124,22 @@ export default class FilesController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const page = parseInt(req.query.page, 10) || 0;
-    const pID = req.query.parentId || String(0);
-    const Files = await getUserFilesWithParentId(pID, page);
     const userFiles = [];
+    let Files;
+    const page = parseInt(req.query.page, 10) || 0;
+    if (req.query.parentId) {
+      const pID = req.query.parentId || String(0);
+      Files = await getUserFilesWithParentId(pID, page);
+    } else {
+      Files = await getUserFilesWithId(user._id.toString(), page);
+    }
     Files.forEach((item) => {
       userFiles.push({
         id: item._id.toString(),
         userId: item.userId,
         name: item.name,
         type: item.type,
-        isPublic: item.isPublic || null,
+        isPublic: item.isPublic,
         parentId: item.parentId,
       });
     });

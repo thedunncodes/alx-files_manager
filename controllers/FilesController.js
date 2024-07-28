@@ -147,4 +147,48 @@ export default class FilesController {
 
     return res.status(200).json(userFiles);
   }
+
+  static async putPublish(req, res) {
+    const user = await getUserWithToken(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const file = await getFileById(req.params.id);
+    if (!file) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    if (!(file.userId.toString() === user._id.toString())) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    try {
+      const response = await dbClient.client.db().collection('files').updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: { isPublic: true } },
+      );
+
+      if (response.matchedCount === 0) {
+        return res.status(404).send('File not found, Update failed');
+      }
+      file.isPublic = true;
+    } catch (err) {
+      console.error(`File public status update failed: ${err}`);
+      return res.status(404).json({ error: 'Failed file update' });
+    }
+
+    return res.status(200).json({
+      id: file._id.toString(),
+      userId: file.userId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId,
+    });
+  }
+
+  static async putUnpublish(req, res) {
+
+  }
 }

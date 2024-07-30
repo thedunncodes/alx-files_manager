@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
+import mime from 'mime-types';
 import { getUserWithToken } from '../utils/getUser';
 import { getFileById, getUserFilesWithId, getUserFilesWithParentId } from '../utils/fileAuth';
 import dbClient from '../utils/db';
@@ -226,5 +227,39 @@ export default class FilesController {
       isPublic: file.isPublic,
       parentId: file.parentId,
     });
+  }
+
+  static async getFile(req, res) {
+    const user = await getUserWithToken(req);
+
+    const file = await getFileById(req.params.id);
+    if (!file) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    if (file.type === 'folder') {
+      return res.status(400).json({ error: 'A folder doesn\'t have content' });
+    }
+
+    if (file.isPublic === false) {
+      try {
+        if (!(file.userId.toString() === user._id.toString())) {
+          return res.status(404).json({ error: 'Not found' });
+        }
+      } catch (err) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+    }
+
+    let data;
+    if (mime.lookup(file.name)) {
+      try {
+        data = fs.readFileSync(file.localPath);
+        return res.status(200).send(data);
+      } catch (err) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+    }
+    return res.status(200).send(data);
   }
 }

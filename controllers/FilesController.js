@@ -44,7 +44,7 @@ export default class FilesController {
     const filePath = `${directoryPath}/${fileUuid}`;
 
     const isPublic = req.body.isPublic || false;
-    const parentId = new ObjectId(req.query.parentId) || String(0);
+    const parentId = req.body.parentId || String(0);
 
     if (req.body.type === 'folder') {
       const newFile = await dbClient.client.db().collection('files').insertOne({

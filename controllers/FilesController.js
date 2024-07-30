@@ -252,7 +252,7 @@ export default class FilesController {
     }
 
     let data;
-    if (mime.lookup(file.name)) {
+    if (true) {
       try {
         data = fs.readFileSync(file.localPath);
         return res.status(200).send(data);

@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { ObjectId } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
-import mime from 'mime-types';
 import { getUserWithToken } from '../utils/getUser';
 import { getFileById, getUserFilesWithId, getUserFilesWithParentId } from '../utils/fileAuth';
 import dbClient from '../utils/db';

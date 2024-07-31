@@ -251,15 +251,11 @@ export default class FilesController {
       }
     }
 
-    let data;
-    if (true) {
-      try {
-        data = fs.readFileSync(file.localPath);
-        return res.status(200).send(data);
-      } catch (err) {
-        return res.status(404).json({ error: 'Not found' });
-      }
+    try {
+      const data = fs.readFileSync(file.localPath);
+      return res.status(200).send(data);
+    } catch (err) {
+      return res.status(404).json({ error: 'Not found' });
     }
-    return res.status(200).send(data);
   }
 }

@@ -237,10 +237,6 @@ export default class FilesController {
       return res.status(404).json({ error: 'Not found' });
     }
 
-    if (file.type === 'folder') {
-      return res.status(400).json({ error: 'A folder doesn\'t have content' });
-    }
-
     if (file.isPublic === false) {
       try {
         if (file.userId.toString() !== user._id.toString()) {
@@ -249,6 +245,10 @@ export default class FilesController {
       } catch (err) {
         return res.status(404).json({ error: 'Not found' });
       }
+    }
+
+    if (file.type === 'folder') {
+      return res.status(400).json({ error: 'A folder doesn\'t have content' });
     }
 
     try {

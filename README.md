@@ -75,6 +75,14 @@ The objective of this project is to create a platform that allows users to uploa
 - `worker.js`: Background job processing.
 - `server.js`: Entry point for the application.
 
+## Usage
+
+After succesfully running the application you can access the project on your command line using `curl` to send requests to your server. [Learn more about `CURL`](https://curl.se/)
+
+To access the project you must be authenticated first and your data must be stored/registered. Access the `POST /users` route to create a new user.
+
+
+
 ## License
 
 This project is provided for educational purposes only. It is not affiliated with any actual file storage platform.
